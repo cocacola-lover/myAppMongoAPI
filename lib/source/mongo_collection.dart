@@ -83,6 +83,11 @@ class MongoCollection {
     return returnedJson[searchName];
   }
 
+  Future<int> count() async {
+    if (!isConnected()) throw AppException(_notConnectedMessage);
+    return await _collection.count();
+  }
+
   Future<bool> existsId(ObjectId id) async {
     return await _existsByField(_idFieldName, id);
   }
