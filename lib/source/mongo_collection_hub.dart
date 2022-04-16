@@ -15,7 +15,7 @@ class MongoHubApp {
   FoodProductsCollection get foordProducts => _foodProducts;
 
   // ignore: non_constant_identifier_names
-  MongoHubApp({required String URL, required String hexId}) : _db = Db(URL) {
+  MongoHubApp({required Db db, required String hexId}) : _db = db {
     _users = UserCollection(_db);
     _tags = TagsCollection(_db);
     _foodProducts =
@@ -30,8 +30,8 @@ class MongoHubApp {
       // ignore: non_constant_identifier_names
       {required String URL,
       required String hexId}) async {
-    var db = MongoHubApp(URL: URL, hexId: hexId);
-    await db.open();
-    return db;
+    Db db = await Db.create(URL);
+    var hub = MongoHubApp(db: db, hexId: hexId);
+    return hub;
   }
 }

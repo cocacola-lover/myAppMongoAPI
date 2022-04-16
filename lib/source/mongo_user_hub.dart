@@ -8,7 +8,7 @@ class UserHubApp {
   UserCollection get users => _users;
 
   // ignore: non_constant_identifier_names
-  UserHubApp({required String URL}) : _db = Db(URL) {
+  UserHubApp({required Db db}) : _db = db {
     _users = UserCollection(_db);
   }
 
@@ -19,8 +19,8 @@ class UserHubApp {
   static Future<UserHubApp> create(
       // ignore: non_constant_identifier_names
       {required String URL}) async {
-    var db = UserHubApp(URL: URL);
-    await db.open();
-    return db;
+    var db = await Db.create(URL);
+    var hub = UserHubApp(db: db);
+    return hub;
   }
 }
