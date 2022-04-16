@@ -1,4 +1,4 @@
-import 'package:dart_application_1/source/mongo_collection.dart';
+import 'package:my_app_mongo_api/source/mongo_collection.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class UserHubApp {
