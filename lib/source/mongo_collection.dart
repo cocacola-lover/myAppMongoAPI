@@ -1,5 +1,6 @@
 library my_app_collection;
 
+import 'app_exception.dart';
 import 'package:mongo_dart/mongo_dart.dart'
     show Db, DbCollection, ObjectId, where, modify, ModifierBuilder;
 //import 'force_cast.dart';
@@ -18,6 +19,7 @@ final _deleteFailedMessage = "Delete Failed";
 //final _updateFailedMessage = "Update Failed";
 final _wrongJsonMessage = "Wrong Json contructed";
 
+/*
 class AppException implements Exception {
   final String exceptionMessage;
   AppException(this.exceptionMessage);
@@ -26,7 +28,7 @@ class AppException implements Exception {
   String toString() {
     return exceptionMessage;
   }
-}
+} */
 
 class MongoCollection {
   final DbCollection _collection;

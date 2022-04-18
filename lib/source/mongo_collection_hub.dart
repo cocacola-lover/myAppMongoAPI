@@ -1,8 +1,10 @@
 //part of 'mongo_collection.dart';
 
 //import 'mongo_collection.dart';
-import 'package:my_app_mongo_api/source/mongo_collection.dart';
-import 'package:mongo_dart/mongo_dart.dart';
+import 'package:my_app_mongo_api/source/mongo_collection.dart'
+    show UserCollection, TagsCollection, FoodProductsCollection;
+import 'package:mongo_dart/mongo_dart.dart' show Db, ObjectId, MongoDartError;
+import 'app_exception.dart';
 
 class MongoHubApp {
   final Db _db;
@@ -22,7 +24,14 @@ class MongoHubApp {
         FoodProductsCollection(_db, tags, users, ObjectId.fromHexString(hexId));
   }
 
-  Future open() async => await _db.open();
+  Future open() async {
+    try {
+      await _db.open();
+    } on MongoDartError catch (e) {
+      throw AppException(e.message);
+    }
+  }
+
   void close() => _db.close();
   bool isConnected() => _db.isConnected;
 
