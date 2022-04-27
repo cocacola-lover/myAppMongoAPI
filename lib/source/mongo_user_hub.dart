@@ -1,6 +1,7 @@
 import 'package:my_app_mongo_api/source/mongo_collection.dart'
     show UserCollection;
-import 'package:mongo_dart/mongo_dart.dart' show Db, MongoDartError, ConnectionException;
+import 'package:mongo_dart/mongo_dart.dart'
+    show Db, MongoDartError, ConnectionException;
 import 'app_exception.dart';
 
 class UserHubApp {
@@ -33,8 +34,8 @@ class UserHubApp {
       db = await Db.create(URL);
     } on MongoDartError catch (e) {
       throw AppException(e.message);
-    } on ConnectionException catch(e) {
-      throw AppException()
+    } on ConnectionException catch (e) {
+      throw AppException(e.message);
     }
     var hub = UserHubApp(db: db);
     return hub;
