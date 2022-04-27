@@ -35,6 +35,10 @@ class MongoHubApp {
     }
   }
 
+  void cry() {
+    print("NNNNNNNNNNNNNNNNNNNNNNNOOOOOOOOOOO");
+  }
+
   void close() => _db.close();
   bool isConnected() => _db.isConnected;
 
