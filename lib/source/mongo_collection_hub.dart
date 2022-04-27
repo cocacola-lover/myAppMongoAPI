@@ -3,7 +3,8 @@
 //import 'mongo_collection.dart';
 import 'package:my_app_mongo_api/source/mongo_collection.dart'
     show UserCollection, TagsCollection, FoodProductsCollection;
-import 'package:mongo_dart/mongo_dart.dart' show Db, ObjectId, MongoDartError;
+import 'package:mongo_dart/mongo_dart.dart'
+    show Db, ObjectId, MongoDartError, ConnectionException;
 import 'app_exception.dart';
 
 class MongoHubApp {
@@ -43,6 +44,8 @@ class MongoHubApp {
     try {
       db = await Db.create(URL);
     } on MongoDartError catch (e) {
+      throw AppException(e.message);
+    } on ConnectionException catch (e) {
       throw AppException(e.message);
     }
     var hub = MongoHubApp(db: db, hexId: hexId);
