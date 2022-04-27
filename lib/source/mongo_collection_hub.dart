@@ -30,6 +30,8 @@ class MongoHubApp {
       await _db.open();
     } on MongoDartError catch (e) {
       throw AppException(e.message);
+    } on ConnectionException catch (e) {
+      throw AppException(e.message);
     }
   }
 
