@@ -39,7 +39,12 @@ class MongoHubApp {
       // ignore: non_constant_identifier_names
       {required String URL,
       required String hexId}) async {
-    Db db = await Db.create(URL);
+    Db db;
+    try {
+      db = await Db.create(URL);
+    } on MongoDartError catch (e) {
+      throw AppException(e.message);
+    }
     var hub = MongoHubApp(db: db, hexId: hexId);
     return hub;
   }

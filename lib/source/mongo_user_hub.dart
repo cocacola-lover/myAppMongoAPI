@@ -28,7 +28,12 @@ class UserHubApp {
   static Future<UserHubApp> create(
       // ignore: non_constant_identifier_names
       {required String URL}) async {
-    var db = await Db.create(URL);
+    Db db;
+    try {
+      db = await Db.create(URL);
+    } on MongoDartError catch (e) {
+      throw AppException(e.message);
+    }
     var hub = UserHubApp(db: db);
     return hub;
   }
