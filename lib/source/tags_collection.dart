@@ -98,95 +98,20 @@ class TagsCollection extends MongoCollection {
 
     return map;
   }
+
+  Future<List<String>> sortGroups() async {
+    List<Map<String, dynamic>> groups = await groupsCollection.findAll();
+    List<String> ans = [];
+
+    for (var value in groups) {
+      ans.add((value[_idFieldName] as ObjectId).$oid);
+    }
+    ans.sort();
+    for (var value in groups) {
+      ans[ans.indexOf((value[_idFieldName] as ObjectId).$oid)] =
+          value[_tagsGroupsNameField];
+    }
+
+    return ans;
+  }
 }
-
-
-
-/*
-class TagsCollection extends MongoCollection {
-//Constructors:
-
-  TagsCollection({required String user, required String password})
-      : super(
-            user: user, password: password, collectionName: tagsCollectionName);
-
-  static Future<TagsCollection> create(
-      {required String user, required String password}) async {
-    var ans = TagsCollection(user: user, password: password);
-    await ans.open();
-    return ans;
-  }
-
-  Future<bool> isTagHere(String name) async {
-    if (await findObjectId(name) != null) return true;
-    return false;
-  }
-
-  Future<ObjectId?> findObjectId(String name) async {
-    if (!isConnected()) throw AppException(notConnectedMessage);
-    Map<String, dynamic>? call = await _collection.findOne(where
-        .eq(tagCollectionTagKey, name)
-        .excludeFields([tagCollectionTagKey]));
-    if (call == null) return null;
-
-    ObjectId i;
-    try {
-      i = forceCast<ObjectId>(call[idFieldName]);
-    } on MyCastError {
-      throw AppException(tagsCollectionCorrupted);
-    }
-    return i;
-  }
-
-  Future<List<String>> findAllTags() async {
-    if (!isConnected()) throw AppException(notConnectedMessage);
-
-    List<Map<String, dynamic>> preAns = await _collection
-        .find(where.excludeFields([idFieldName]))
-        .toList(); // Получаем из базы данных Json-ы
-
-    var ans = <String>[];
-    for (var item in preAns) {
-      // Фильтруем просто в tag
-      String i;
-      try {
-        i = forceCast<String>(item[tagCollectionTagKey]);
-      } on MyCastError {
-        throw AppException(tagsCollectionCorrupted);
-      }
-      ans.add(i);
-    }
-    return ans;
-  }
-
-  Future<bool> addTag(String name) async {
-    if (await isTagHere(name)) return true;
-
-    var result = await _collection.insertOne({tagCollectionTagKey: name});
-    if (result.ok == 1) return true;
-    return false;
-  }
-
-  Future<bool> deleteTag(String name) async {
-    if (!(await isTagHere(name))) return true;
-
-    var result = await _collection.deleteOne({tagCollectionTagKey: name});
-    if (result.ok == 1) return true;
-    return false;
-  }
-
-  Future<String?> findTagById(ObjectId id) async {
-    if (!isConnected()) throw AppException(notConnectedMessage);
-    Map<String, dynamic>? call = await _collection
-        .findOne(where.eq(idFieldName, id).excludeFields([idFieldName]));
-    if (call == null) return null;
-
-    String i;
-    try {
-      i = forceCast<String>(call[tagCollectionTagKey]);
-    } on MyCastError {
-      throw AppException(tagsCollectionCorrupted);
-    }
-    return i;
-  }
-}*/

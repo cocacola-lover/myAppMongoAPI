@@ -19,17 +19,6 @@ final _deleteFailedMessage = "Delete Failed";
 //final _updateFailedMessage = "Update Failed";
 final _wrongJsonMessage = "Wrong Json contructed";
 
-/*
-class AppException implements Exception {
-  final String exceptionMessage;
-  AppException(this.exceptionMessage);
-
-  @override
-  String toString() {
-    return exceptionMessage;
-  }
-} */
-
 class MongoCollection {
   final DbCollection _collection;
   final Db _db;
