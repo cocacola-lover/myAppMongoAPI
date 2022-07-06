@@ -3,6 +3,7 @@ import 'package:my_app_mongo_api/source/mongo_collection.dart'
 import 'package:mongo_dart/mongo_dart.dart'
     show Db, MongoDartError, ConnectionException;
 import 'app_exception.dart';
+import 'dart:io' show SocketException;
 
 class UserHubApp {
   final Db _db;
@@ -22,6 +23,8 @@ class UserHubApp {
       throw AppException(e.message);
     } on ConnectionException catch (e) {
       throw AppException(e.message);
+    } on SocketException catch (e) {
+      throw AppException(e.message);
     }
   }
 
@@ -37,6 +40,8 @@ class UserHubApp {
     } on MongoDartError catch (e) {
       throw AppException(e.message);
     } on ConnectionException catch (e) {
+      throw AppException(e.message);
+    } on SocketException catch (e) {
       throw AppException(e.message);
     }
     var hub = UserHubApp(db: db);
