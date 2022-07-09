@@ -265,6 +265,7 @@ class FoodProductsCollection extends MongoCollection {
     if (!(await _checkRateExistense(productName))) {
       throw AppException(_foodProductsRateDoNotExist);
     }
+
     var result = await _collection.updateOne(
       where
           .eq(_foodProductNameField, productName)
@@ -311,6 +312,27 @@ class FoodProductsCollection extends MongoCollection {
     ObjectId? id = await _tagsCollection.findIdbyName(tag);
     if (id == null) throw AppException(_foodProductsTagDoesNotExist);
     return await deleteTagById(productName, id);
+  }
+
+  Future<List<Map<String, dynamic>>> findFiltered(
+      {required String stringFilter, required List<ObjectId> tags}) async {
+    if (!isConnected()) throw AppException(_notConnectedMessage);
+
+    var th =
+        where.match(_foodProductNameField, stringFilter, caseInsensitive: true);
+
+    for (final tag in tags) {
+      th = th.eq(_foodProductTagsField, tag);
+    }
+
+    List<Map<String, dynamic>> returnedList =
+        await _collection.find(th).toList();
+
+    for (int i = 0; i < returnedList.length; i++) {
+      if (!checkTemplate(returnedList[i])) _corruptedException();
+      returnedList[i] = await _extraAction(returnedList[i]);
+    }
+    return returnedList;
   }
 }
 
