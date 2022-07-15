@@ -42,7 +42,7 @@ class MongoHubApp {
     print("NNNNNNNNNNNNNNNNNNNNNNNOOOOOOOOOOO");
   }
 
-  void close() => _db.close();
+  Future close() async => await _db.close();
   bool isConnected() => _db.isConnected;
 
   static Future<MongoHubApp> create(

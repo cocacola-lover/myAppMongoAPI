@@ -28,7 +28,7 @@ class UserHubApp {
     }
   }
 
-  void close() => _db.close();
+  Future close() async => await _db.close();
   bool isConnected() => _db.isConnected;
 
   static Future<UserHubApp> create(
