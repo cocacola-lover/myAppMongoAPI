@@ -190,16 +190,17 @@ class FoodProductsCollection extends MongoCollection {
         _foodProductNameField, oldName, _foodProductNameField, newName);
   }
 
-  Future<bool> _createRate(String productName, int intRate,
-      [String comment = ""]) async {
+  Future<bool> createRate(String productName,
+      {int? intRate, String? comment}) async {
+    if (intRate == null && comment == null) return false;
     if (!await existsName(productName)) {
       throw AppException(_foodProductsProductDoesNotExist);
     }
 
     dynamic rate = <String, dynamic>{};
     rate[_rateUserField] = _myId;
-    rate[_rateRateField] = intRate;
-    if (comment != "") rate[_rateCommentField] = comment;
+    if (intRate != null) rate[_rateRateField] = intRate;
+    if (comment != null) rate[_rateCommentField] = comment;
 
     var result = await _collection.updateOne(
         where.eq(_foodProductNameField, productName),
@@ -209,7 +210,7 @@ class FoodProductsCollection extends MongoCollection {
     return true;
   }
 
-  Future<bool> _checkRateExistense(String productName) async {
+  Future<bool> checkRateExistense(String productName) async {
     if (!await existsName(productName)) {
       throw AppException(_foodProductsProductDoesNotExist);
     }
@@ -221,8 +222,8 @@ class FoodProductsCollection extends MongoCollection {
   }
 
   Future<bool> setMyRate(String productName, int rate) async {
-    if (await _checkRateExistense(productName)) {
-      return await _createRate(productName, rate);
+    if (await checkRateExistense(productName)) {
+      return await createRate(productName, intRate: rate);
     }
     var result = await _collection.updateOne(
       where
@@ -235,8 +236,8 @@ class FoodProductsCollection extends MongoCollection {
   }
 
   Future<bool> setMyComment(String productName, String comment) async {
-    if (!(await _checkRateExistense(productName))) {
-      throw AppException(_foodProductsRateDoNotExist);
+    if (!(await checkRateExistense(productName))) {
+      return await createRate(productName, comment: comment);
     }
 
     var result = await _collection.updateOne(
@@ -251,7 +252,7 @@ class FoodProductsCollection extends MongoCollection {
   }
 
   Future<bool> deleteMyComment(String productName) async {
-    if (!(await _checkRateExistense(productName))) {
+    if (!(await checkRateExistense(productName))) {
       throw AppException(_foodProductsRateDoNotExist);
     }
 
@@ -265,9 +266,24 @@ class FoodProductsCollection extends MongoCollection {
     return true;
   }
 
-  Future<bool> deleteMyRate(String productName) async {
-    if (!(await _checkRateExistense(productName))) {
+  Future<bool> deleteMyNumRate(String productName) async {
+    if (!(await checkRateExistense(productName))) {
       throw AppException(_foodProductsRateDoNotExist);
+    }
+
+    var result = await _collection.updateOne(
+      where
+          .eq(_foodProductNameField, productName)
+          .eq("$_foodProductRateField.$_rateUserField", _myId),
+      ModifierBuilder().unset('$_foodProductRateField.\$.$_rateRateField'),
+    );
+    if (result.isFailure) return false;
+    return true;
+  }
+
+  Future<bool> deleteMyRate(String productName) async {
+    if (!(await checkRateExistense(productName))) {
+      return true;
     }
 
     var result = await _collection.updateOne(
