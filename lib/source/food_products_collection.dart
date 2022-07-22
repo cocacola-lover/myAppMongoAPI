@@ -51,7 +51,11 @@ class FoodProductsCollection extends MongoCollection {
             return false;
           }
         } else if (pair.key == _rateCommentField) {
-          if (pair.value is! String) return false;
+          if (pair.value is String) {
+            rateCheck = true;
+          } else {
+            return false;
+          }
         } else {
           return false;
         }
