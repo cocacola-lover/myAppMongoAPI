@@ -362,12 +362,14 @@ class ProductBuilder {
   final List<dynamic> _tags = [];
 
   void setName(String nameN) => name = nameN;
-  void addRate(ObjectId user, int rate, [String comment = ""]) {
+  void addRate(ObjectId user, {int? rate, String? comment}) {
     Map<String, dynamic> map = <String, dynamic>{};
 
+    if (rate == null && comment == null) return;
+
     map[_rateUserField] = user;
-    map[_rateRateField] = rate;
-    if (comment != "") map[_rateCommentField] = comment;
+    if (rate != null) map[_rateRateField] = rate;
+    if (comment != null) map[_rateCommentField] = comment;
 
     _rate.add(map);
   }
